@@ -1,0 +1,14 @@
+web에서 중요한 점
+HTTP
+1.URL: 요청메세지
+-front: 페이지 통신-화면전환 HTML형식
+-back: Rest(데이터 통신) JSON 형식 - 대상은 명사로 지정 나머지 동작은 CRUD 내에서 처리 가능
+CSL:클라이언트에서 서버 구성 데이터만 통신
+SSL: 페이지 까지 완성해여 보냄
+2.Method: 요청에 대한 구분,type
+-Create
+-Update
+-Delete
+-Select
++
+-patch
