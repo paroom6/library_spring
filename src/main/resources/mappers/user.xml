@@ -11,7 +11,23 @@
         <result property="email" column="email"/>
         <result property="createTime" column="create_date"/>
         <result property="updateTime" column="update_date"/>
+        <collection property="roleRegisters" javaType="list" resultMap="RoleRegisterResultMap"/>
     </resultMap>
+
+    <resultMap id="RoleRegisterResultMap" type="com.study.library.entity.RoleRegister">
+        <id property="roleRegisterId" column="user_register_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="roleId" column="role_id"/>
+        <association property="role" resultMap="RoleResultMap"/>
+    </resultMap>
+
+    <resultMap id="RoleResultMap" type="com.study.library.entity.Role">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleNameKor" column="role_name_kor"/>
+    </resultMap>
+
+
 
     <select
             id="findUserByUsername"
@@ -19,15 +35,21 @@
             resultMap="UserResultMap"
     >
         select
-            user_id,
-            user_name,
-            password,
-            name,
-            email,
-            create_date,
-            update_date
+            ut.user_id,
+            ut.user_name,
+            ut.password,
+            ut.name,
+            ut.email,
+            ut.create_date,
+            ut.update_date,
+            rrt.role_register_id,
+            rrt.role_id,
+            rt.role_name,
+            rt.role_name_kor
         from
-            user_tb
+            user_tb ut
+            left outer join role_register_tb rrt on(rrt.user_id = ut.user_id)
+            left outer join role_tb rt on(rt.role_id = rrt.role_id)
         where
             user_name = #{username}
     </select>
