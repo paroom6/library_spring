@@ -17,6 +17,5 @@ public class RoleRegister {
     private int roleId;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
-
     private Role role;
 }
