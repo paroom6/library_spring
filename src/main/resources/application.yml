@@ -12,7 +12,9 @@ spring:
       on-profile: local
 server:
   port: 8080
+  deploy-address: localhost
   name: local
+
 ---
 
 spring:

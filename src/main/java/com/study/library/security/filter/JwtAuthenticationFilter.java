@@ -22,7 +22,6 @@ public class JwtAuthenticationFilter extends GenericFilter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-
         Boolean isPermitAll = (Boolean) request.getAttribute("isPermitAll");
         if(!isPermitAll) {
             String accessToken = request.getHeader("Authorization");
