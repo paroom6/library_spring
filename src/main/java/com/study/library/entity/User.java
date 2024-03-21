@@ -29,7 +29,7 @@ public class User {
     private LocalDateTime updateTime;
 
     private List<RoleRegister> roleRegisters;
-
+    private List<OAuth2> oAuth2s;
     public List<SimpleGrantedAuthority> getAuthorities() {
 //        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 //        for(RoleRegister roleRegister : roleRegisters) {

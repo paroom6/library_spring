@@ -1,6 +1,7 @@
 package com.study.library.aop;
 
 import com.study.library.Repository.UserMapper;
+import com.study.library.dto.OAuth2SignupReqDto;
 import com.study.library.dto.SignupReqDto;
 import com.study.library.exception.ValidException;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +31,13 @@ public class ValidAop {
     @Around("pointCut()")
     public Object around (ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String methodName = proceedingJoinPoint.getSignature().getName();
+        System.out.println(methodName);
         Object[] args = proceedingJoinPoint.getArgs();
         BeanPropertyBindingResult bindingResult = null;
         for(Object arg : args) {
             if(BeanPropertyBindingResult.class == arg.getClass()) {
                 bindingResult = (BeanPropertyBindingResult) arg;
             }
-
         }
         if(methodName.equals("signup")) {
             SignupReqDto signupReqDto = null;
@@ -47,6 +48,19 @@ public class ValidAop {
 
             }
             if(userMapper.findUserByUsername(signupReqDto.getUsername()) != null) {
+                ObjectError objectError = new FieldError("username", "username", "이미 존재하는 사용자이름입니다.");
+                bindingResult.addError(objectError);
+            }
+        }
+
+        if(methodName.equals("oAuth2Signup")) {
+            OAuth2SignupReqDto oAuth2SignupReqDto = null;
+            for(Object arg : args) {
+                if(OAuth2SignupReqDto.class == arg.getClass()) {
+                    oAuth2SignupReqDto = (OAuth2SignupReqDto) arg;
+                }
+            }
+            if(userMapper.findUserByUsername(oAuth2SignupReqDto.getUsername()) != null) {
                 ObjectError objectError = new FieldError("username", "username", "이미 존재하는 사용자이름입니다.");
                 bindingResult.addError(objectError);
             }

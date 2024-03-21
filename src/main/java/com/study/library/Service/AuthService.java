@@ -1,10 +1,12 @@
 package com.study.library.Service;
 
 import com.study.library.Repository.UserMapper;
+import com.study.library.dto.OAuth2SignupReqDto;
 import com.study.library.dto.SigninReqDto;
 import com.study.library.dto.SignupReqDto;
 import com.study.library.entity.User;
 import com.study.library.exception.SaveException;
+import com.study.library.exception.ValidException;
 import com.study.library.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 public class AuthService {
 
@@ -24,6 +28,7 @@ public class AuthService {
     private BCryptPasswordEncoder passwordEncoder; //내장된 암호화 객체
     @Autowired
     private JwtProvider jwtProvider;
+
     public boolean isDuplicatedByUsername(String username) {
         return userMapper.findUserByUsername(username) != null;
     }
@@ -40,6 +45,20 @@ public class AuthService {
 
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void oAuth2Signup(OAuth2SignupReqDto oAuth2SignupReqDto){
+        int successCount = 0;
+        User user = oAuth2SignupReqDto.toEntity(passwordEncoder);
+        successCount += userMapper.saveUser(user);
+        successCount += userMapper.saveRole(user.getUserId(), 1);
+        successCount += userMapper.saveOAuth2(oAuth2SignupReqDto.toOAuth2Entity(user.getUserId()));
+
+        if(successCount < 3) {
+            throw new SaveException();
+        }
+
+    }
+
     public String signin(SigninReqDto signinReqDto) {
         User user = userMapper.findUserByUsername(signinReqDto.getUsername());
         if(user == null) {
@@ -49,7 +68,7 @@ public class AuthService {
              throw new BadCredentialsException("사용자 정보를 확인하세요.");
         }
 
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(user.toPrincipalUser(), "");
+//      Authentication authentication = new UsernamePasswordAuthenticationToken(user.toPrincipalUser(), "");
         return jwtProvider.generateToken(user);
     }
 }

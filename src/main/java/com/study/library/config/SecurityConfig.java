@@ -1,8 +1,10 @@
 package com.study.library.config;
 
+import com.study.library.Service.OAuth2PrincipalUserService;
 import com.study.library.security.exception.AuthEntryPoint;
 import com.study.library.security.filter.JwtAuthenticationFilter;
 import com.study.library.security.filter.PerminAllfilter;
+import com.study.library.security.handler.OAuth2SuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +23,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
     @Autowired
+    private OAuth2PrincipalUserService oAuth2PrincipalUserService;
+    @Autowired
     private PerminAllfilter perminAllfilter;
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     private AuthEntryPoint authEntryPoint;
+    @Autowired
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors();//WebMvcConfig의 cors 설정을 따라간다.
@@ -42,7 +48,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(perminAllfilter, LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
-                .authenticationEntryPoint(authEntryPoint);
+                .authenticationEntryPoint(authEntryPoint)
+                .and()
+                .oauth2Login()
+                .successHandler(oAuth2SuccessHandler)
+                .userInfoEndpoint()
+                //정보를 구해서  userService로 이동
+                .userService(oAuth2PrincipalUserService);
     }
 
 }
