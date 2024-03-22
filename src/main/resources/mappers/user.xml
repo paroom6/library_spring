@@ -33,6 +33,15 @@
         <result property="userId" column="user_id"/>
         <result property="providerName" column="provider_name"/>
     </resultMap>
+    <update id="modifyPassword" parameterType="com.study.library.entity.User">
+        update
+            user_tb
+        set
+            password = #{password}
+            update_date = new()
+        where
+            user_id = #{userId}
+    </update>
 
 
     <select
