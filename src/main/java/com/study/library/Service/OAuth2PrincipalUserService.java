@@ -17,16 +17,13 @@ public class OAuth2PrincipalUserService implements OAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
-        System.out.println(oAuth2User + ":service2user");
         Map<String, Object> attributes =  oAuth2User.getAttributes();
         String provider = userRequest.getClientRegistration().getClientName();
         Map<String, Object> newAttributes = null;
-        System.out.println(attributes);
         String id = null;
         switch (provider) {
             case "Google" :
                 id = attributes.get("sub").toString();
-
                 break;
             case "Naver" :
                 Map<String, Object> response = (Map<String, Object>)attributes.get("response");

@@ -30,8 +30,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private JwtProvider jwtProvider;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        System.out.println(authentication.toString());
-        System.out.println(authentication.getPrincipal());
         String name = authentication.getName();
         User user = userMapper.findUserByOAuth2name(name);
         if(user == null) {
