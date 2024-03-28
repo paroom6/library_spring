@@ -6,6 +6,7 @@ import com.study.library.aop.annotation.ValidAspect;
 import com.study.library.dto.RegisterBookReqDto;
 import com.study.library.dto.SearchBookRespDto;
 import com.study.library.dto.SearchBooksReqDto;
+import com.study.library.dto.UpdateBookReqDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -36,5 +37,22 @@ public class AdminBookController {
     @GetMapping("/books/count")
     public ResponseEntity<?> getCount(SearchBooksReqDto searchBooksReqDto) {
         return ResponseEntity.ok(bookService.getBookCount(searchBooksReqDto));
+    }
+
+
+    @DeleteMapping("/books/delete")
+    public  ResponseEntity<?> deleteBooks(@RequestBody List<Integer> bookIds) {
+        bookService.deleteBooks(bookIds);
+        return ResponseEntity.ok(true);
+    }
+
+    @ParamsPrintAspect
+    @PutMapping("/book/{bookId}")
+    public ResponseEntity<?> updateBook(
+            @PathVariable int bookId,
+            @RequestBody UpdateBookReqDto updateBookReqDto) {
+        System.out.println(updateBookReqDto);
+        bookService.updateBook(updateBookReqDto);
+        return ResponseEntity.ok(null);
     }
 }

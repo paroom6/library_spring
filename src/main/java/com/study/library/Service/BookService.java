@@ -1,10 +1,7 @@
 package com.study.library.Service;
 
 import com.study.library.Repository.BookMapper;
-import com.study.library.dto.RegisterBookReqDto;
-import com.study.library.dto.SearchBookCountRespDto;
-import com.study.library.dto.SearchBookRespDto;
-import com.study.library.dto.SearchBooksReqDto;
+import com.study.library.dto.*;
 import com.study.library.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +45,15 @@ public class BookService {
                 .maxPageNumber(MaxPageNumber)
                 .build();
 
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteBooks(List<Integer> bookIds) {
+        bookMapper.deleteBooksByBookIds(bookIds);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updateBook(UpdateBookReqDto updateBookReqDto) {
+        bookMapper.updateBookByBookId(updateBookReqDto.toEntity());
     }
 }
